@@ -4,7 +4,7 @@ SqlManager::$share = new SqlManager();
 
 class SqlManager {
 
-  public static SqlManager $share;
+  public static $share;
 
   private $host;
   private $user;
@@ -21,22 +21,28 @@ class SqlManager {
   private function firstConfigure() {
     // Подгрузка конфигурации базы данных
     try {
-      $sql = _config["sql"] ?? throw new Exception("No sql section in config.ini");
-      $this->host = $sql["host"] ?? throw new Exception("No sql/host in config.ini");
-      $this->user = $sql["user"] ?? throw new Exception("No sql/user in config.ini");
-      $this->password = $sql["password"] ?? throw new Exception("No sql/password in config.ini");
-      $this->database = $sql["database"] ?? throw new Exception("No sql/database in config.ini");
+      $sql = _config["sql"] ?? new Exception("No sql section in config.ini");
+      $this->host = $sql["host"] ?? new Exception("No sql/host in config.ini");
+      $this->user = $sql["user"] ?? new Exception("No sql/user in config.ini");
+      $this->password = $sql["password"] ?? new Exception("No sql/password in config.ini");
+      $this->database = $sql["database"] ?? new Exception("No sql/database in config.ini");
     } catch(Exception $e) {
         Console::log("SqlManager: Error: ".$e->getMessage());
         return;
     }
 
-    /* Вы должны включить отчёт об ошибках для mysqli, прежде чем пытаться установить соединение */
-    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+    try {
+      /* Вы должны включить отчёт об ошибках для mysqli, прежде чем пытаться установить соединение */
+      mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-    $this->db = new mysqli($this->host, $this->user, $this->password, $this->database);
-    /* Установите желаемую кодировку после установления соединения, есть поддержка русского языка */
-    $this->db->set_charset('utf8mb4');
+      $this->db = new mysqli($this->host, $this->user, $this->password, $this->database);
+
+      /* Установите желаемую кодировку после установления соединения, есть поддержка русского языка */
+      $this->db->set_charset('utf8mb4');
+    } catch(Exception $e) {
+      Console::logGroup("Error: ".$e->getMessage(), 'SqlManager');
+      return;
+    }
   }
 
   function tokenCheck(string $token) {
@@ -47,7 +53,7 @@ class SqlManager {
     try {
       $requestResult = $this->db->query($queryString);
     } catch(Exception $e) {
-      Console::error("SqlManager: Error: ".$e->getMessage());
+      Console::logGroup("Error: ".$e->getMessage(), 'SqlManager');
       return new Result(null, $e);
     }
     $type = gettype($requestResult);

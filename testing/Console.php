@@ -5,7 +5,10 @@ class Console {
         return __DIR__."/output.log";
     }
 
-    static function fileWrire($text, $lb=true) {
+    public static $enableGroups = [];
+    public static $enableTime = False;
+
+    static function fileWrire(String $text, Bool $lb=true) {
         if (!$handle = fopen(static::filename(), 'a')) {
             exit;
         }
@@ -28,7 +31,8 @@ class Console {
             fclose($handle);
         }
     }
-    static function log($text, $prefix="", $level=0) {
+
+    static function log(String $text, String $prefix="", Int $level=0) {
         if(is_array($text)) {
             if($level == 0) {
                 static::fileWrire($prefix."[");
@@ -43,25 +47,15 @@ class Console {
         } else if(is_object($text)){
             static::log(json_decode(json_encode($text),true));
         } else {
-            if($level == 0) {
-                if(gettype($text) == 'boolean') {
-                    if($text === true) $text = "true";
-                    else $text = "false";
-                }
-                static::fileWrire($text);
-            } else {
-                if(gettype($text) == 'boolean') {
-                    if($text === true) $text = "true";
-                    else $text = "false";
-                }
-                static::fileWrire($prefix.": ".$text.",");
+            if($level == 0 && $prefix != "") {
+                $prefix = $prefix.": ";
             }
+            if(gettype($text) == 'boolean') {
+                if($text === true) $text = "true";
+                else $text = "false";
+            }
+            static::fileWrire($prefix.$text);
         }
-    }
-
-    static function error($text, $prefix="", $level=0) {
-        Console::log(nowDate());
-        Console::log($text, $prefix, $level);
     }
 
     static function logRequest() {
@@ -76,6 +70,17 @@ class Console {
     static function breakLine() {
         foreach (range(0,70) as $i) {
             static::fileWrire("=",false);
+        }
+        static::fileWrire("\n",false);
+    }
+
+    static function logGroup(String $text, String $group = "") {
+        if(in_array($group, Console::$enableGroups)) {
+            if(Console::$enableTime) {
+                Console::log(date("Y.m.d-h:m:s"));
+            }
+            $group = "Group $group";
+            Console::log($text, $group);
         }
     }
 }

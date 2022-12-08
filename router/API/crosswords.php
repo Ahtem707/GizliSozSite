@@ -28,7 +28,7 @@ class Crosswords {
         $result = SqlManager::$share->request($queryString);
         
         if($result->error) {
-            Console::error($result->error);
+            Console::logGroup($result->error, "crosswords");
         } else {
             foreach($result->data as &$item) {
                 $item['words'] = json_decode($item['words']);
