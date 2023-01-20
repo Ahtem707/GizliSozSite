@@ -3,6 +3,7 @@
 include 'Request.php';
 include 'RouterModule.php';
 include 'Api/crosswords.php';
+include 'Api/wordSound.php';
 
 class Router {
     function __construct() {
@@ -46,6 +47,7 @@ class SiteRouter extends RouterModule {
 class ApiPath {
     static $crossword = "/crosswords";
     static $dictionary = "/dictionary";
+    static $wordSound = "/wordSound";
 }
 
 class ApiRouter extends RouterModule {
@@ -59,6 +61,9 @@ class ApiRouter extends RouterModule {
                 break;
             case ApiPath::$dictionary:
                 Console::log("dic");
+                break;
+            case ApiPath::$wordSound:
+                new WordSound($this->req, $this->res);
                 break;
             default:
                 Console::log("default");

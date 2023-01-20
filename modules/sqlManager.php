@@ -33,12 +33,23 @@ class SqlManager {
 
     try {
       /* Вы должны включить отчёт об ошибках для mysqli, прежде чем пытаться установить соединение */
-      mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+      // mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+      $config = "host=$this->host dbname=$this->database user=$this->user password=$this->password";
+      $this->db = pg_connect($config);
+      // $query = 'SELECT * FROM projects_card;';
+      // $result = pg_query($query) or die('Error message: ' . pg_last_error());
+      // Console::logGroup($result, "test");
+      // while ($row = pg_fetch_row($result)) {
+      //   Console::logGroup($row, "test");
+      //     var_dump($row);
+      // }
 
-      $this->db = new mysqli($this->host, $this->user, $this->password, $this->database);
+      // pg_free_result($result);
+      // pg_close($this->db);
+      // $this->db = new mysqli($this->host, $this->user, $this->password, $this->database);
 
       /* Установите желаемую кодировку после установления соединения, есть поддержка русского языка */
-      $this->db->set_charset('utf8mb4');
+      // $this->db->set_charset('utf8mb4');
     } catch(Exception $e) {
       Console::logGroup("Error: ".$e->getMessage(), 'SqlManager');
       return;

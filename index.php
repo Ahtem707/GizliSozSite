@@ -7,6 +7,7 @@ include('testing/Console.php');
 Console::$enableGroups = [
     'SqlManager',
     'crosswords',
+    'test'
 ];
 Console::$enableTime = False;
 
@@ -19,10 +20,10 @@ include('modules/gStore.php');
 include('modules/sqlManager.php');
 include('modules/Pages.php');
 
-// // Router
+// Router
 include('router/index.php');
 
-// // Extension
+// Extension
 include('extension/Response.php');
 include('extension/RequestMethod.php');
 

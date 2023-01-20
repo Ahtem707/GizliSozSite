@@ -32,7 +32,7 @@ class Console {
         }
     }
 
-    static function log(String $text, String $prefix="", Int $level=0) {
+    static function log($text, String $prefix="", Int $level=0) {
         if(is_array($text)) {
             if($level == 0) {
                 static::fileWrire($prefix."[");
@@ -74,7 +74,7 @@ class Console {
         static::fileWrire("\n",false);
     }
 
-    static function logGroup(String $text, String $group = "") {
+    static function logGroup($text, String $group = "") {
         if(in_array($group, Console::$enableGroups)) {
             if(Console::$enableTime) {
                 Console::log(date("Y.m.d-h:m:s"));
